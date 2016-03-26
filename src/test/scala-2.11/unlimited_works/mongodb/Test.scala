@@ -1,7 +1,9 @@
-import org.mongodb.scala.{Completed, MongoClient}
-import org.mongodb.scala.bson.collection.immutable.Document
+package unlimited_works.mongodb
 
-object Test extends App {
+import org.mongodb.scala.bson.collection.immutable.Document
+import org.mongodb.scala.{Completed, MongoClient}
+
+object TestJStr extends App {
   val mongoClient: MongoClient = MongoClient()
   val mongoDB = mongoClient.getDatabase("helloworld")
   val mongoCollection = mongoDB.getCollection("test")
@@ -12,5 +14,10 @@ object Test extends App {
   val result = mongoCollection.insertOne(documentStr)
   result.subscribe((observer: Completed) => println(observer))
   Thread.currentThread().join()
-  Thread.sleep(3000)
+}
+
+object nanoTime extends App {
+  val x = System.nanoTime()
+  val y = System.nanoTime()
+  println(s"x - $x, y - $y")
 }
