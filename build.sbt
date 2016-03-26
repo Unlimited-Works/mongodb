@@ -13,15 +13,15 @@ lazy val versions = new {
 
 libraryDependencies ++= Seq(
   "org.mongodb.scala" %% "mongo-scala-driver" % versions.mongoScalaDriver,
-  "net.liftweb" %% "lift-mongodb-record" % versions.liftMongoRecorder,
-  "org.mongodb" %	"mongodb-driver" % versions.mongoJavaDriver,
-  "org.mongodb" % "mongodb-driver-async" % versions.mongoJavaDriverAsync,
+//  "net.liftweb" %% "lift-mongodb-record" % versions.liftMongoRecorder,
+//  "org.mongodb" %	"mongodb-driver" % versions.mongoJavaDriver,
+//  "org.mongodb" % "mongodb-driver-async" % versions.mongoJavaDriverAsync,
 
   //  "com.typesafe.akka" %% "akka-actor" % versions.akkaActor,
-  "com.netflix.rxjava" % "rxjava-scala" % "0.20.7"
+  "io.reactivex" %% "rxscala" % "0.26.0",
 
   //json
-//  "net.liftweb" %% "lift-json" % versions.liftMongoRecorder
+  "net.liftweb" %% "lift-json" % versions.liftMongoRecorder
 )
 
 
