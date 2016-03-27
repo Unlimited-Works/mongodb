@@ -1,5 +1,7 @@
 package unlimited_works.mongodb
 
+import java.util.concurrent.Executors
+
 import lorance.rxscoket.session._
 import lorance.rxscoket.log
 import rx.lang.scala.schedulers.ComputationScheduler
@@ -16,7 +18,11 @@ object MongoServer extends App {
   }
   val listen = entrance.listen
 
-  val reader = listen.flatMap{l =>l.startReading.map{r => (r, l)}}.observeOn(ComputationScheduler())
+  val executors = Executors.newSingleThreadExecutor()
+
+  val reader = listen.flatMap{l =>l.startReading.map{r => (r, l)}}.
+//    subscribeOn(ComputationScheduler()).//needn't use ThreaPool for subscribe event beacuse of data cimputation works on `stratReading` loop which is scala Future affect.
+    observeOn(ComputationScheduler())
 
   val mongoOperationSub = reader.subscribe { _ match {
     case (protos, socket) =>
