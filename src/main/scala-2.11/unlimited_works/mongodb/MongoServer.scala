@@ -2,6 +2,7 @@ package unlimited_works.mongodb
 
 import lorance.rxscoket.session._
 import lorance.rxscoket.log
+import rx.lang.scala.schedulers.ComputationScheduler
 
 /**
   * which represent a connect's message queue
@@ -14,7 +15,8 @@ object MongoServer extends App {
     new ServerEntrance("127.0.0.1", 10001)
   }
   val listen = entrance.listen
-  val reader = listen.flatMap{l =>l.startReading.map{r => (r, l)}}
+
+  val reader = listen.flatMap{l =>l.startReading.map{r => (r, l)}}.observeOn(ComputationScheduler())
 
   val mongoOperationSub = reader.subscribe { _ match {
     case (protos, socket) =>
