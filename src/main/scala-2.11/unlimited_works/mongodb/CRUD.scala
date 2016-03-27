@@ -5,7 +5,8 @@ import java.nio.ByteBuffer
 import com.mongodb.client.result.{DeleteResult, UpdateResult}
 import lorance.rxscoket._
 import lorance.rxscoket.session.ConnectedSocket
-import lorance.rxscoket.presentation.json.JsonParse //.ConnectedSocket
+import lorance.rxscoket.presentation.json.JsonParse
+
 import net.liftweb.json._
 import org.mongodb.scala.{MongoClient, Completed}
 import org.mongodb.scala.bson.collection.immutable.Document
@@ -17,11 +18,15 @@ class CRUD(mongoAddress: String) {
     MongoClient(mongoAddress)
   }
 
-  def execute(load: String, socket: ConnectedSocket = null) = {
+  def execute(load: String, socket: ConnectedSocket) = {
     val json = parse(load)
 
     val taskIdOpt = json.findField(_.name == "taskId")
 
+    /**
+      * todo these instance could be save because of Observable is stream for multi request.
+      *
+      */
     val dbName = (json \ "dataBase").values.asInstanceOf[String]
     val collectionName = (json \ "collection").values.asInstanceOf[String]
     val theMethod = json \ "method"//CRUD
@@ -50,7 +55,7 @@ class CRUD(mongoAddress: String) {
           val mergedStr = compactRender(merged)
 
           socket.send(ByteBuffer.wrap(session.enCode(1.toByte, mergedStr)))
-          log(s"find merge result : $mergedStr")
+          log(s"find merged result : $mergedStr")
         }
       /**
         * method: insert
@@ -135,17 +140,53 @@ class CRUD(mongoAddress: String) {
       case "aggregate" =>
         val pipes = params.asInstanceOf[JArray]
         val pipesDoc = pipes.arr.map{ item => Document(compactRender(item))}
-        val rst = theColl.aggregate(pipesDoc)
-        rst.subscribe { s: Document =>
+        val rst = theColl.aggregate(pipesDoc)//aggregate is Future exactly.
+
+        rst.subscribe((s: Document) =>
           taskIdOpt.map { taskId =>
             val jStr = s.toJson()
             val json = parse(jStr)
             val merged = json.merge(JObject(taskId))
             val mergedStr = compactRender(merged)
-            log(s"aggregate result - $mergedStr")
+            log(s"aggregate onNext - $mergedStr")
             socket.send(ByteBuffer.wrap(JsonParse.enCode(mergedStr)))
+          },
+          (error: Throwable) => log(s"aggregate onError - $error", -1),
+          () => taskIdOpt.map { t =>
+            val jsonStr = compactRender(JObject(t))
+            log(s"aggregate completed - $jsonStr")
+            socket.send(ByteBuffer.wrap(JsonParse.enCode(jsonStr)))
           }
-        }
+        )
+
+        //todo Q: why custom Observer can't trigge `onNext`?
+//        val rstObserver = new Observer[Document]{
+//          override def onSubscribe(subscription: Subscription): Unit = subscription.request(Long.MaxValue)
+//
+//          override def onNext(value: Document): Unit = {
+//            s: Document => {
+//              taskIdOpt.map { taskId =>
+//                val jStr = s.toJson()
+//                val json = parse(jStr)
+//                val merged = json.merge(JObject(taskId))
+//                val mergedStr = compactRender(merged)
+//                log(s"aggregate onNext - $mergedStr")
+//                socket.send(ByteBuffer.wrap(JsonParse.enCode(mergedStr)))
+//              }
+//            }
+//          }
+//
+//          override def onError(error: Throwable): Unit = log(s"aggregate search Exception - $error", -1)
+//
+//          override def onComplete(): Unit = taskIdOpt.map { t =>
+//            log(s"aggregate completed - ${compactRender(JObject(t))}")
+//            socket.send(ByteBuffer.wrap(JsonParse.enCode(t)))
+//          }
+//        }
+//
+//        //only execute onComplete even through aggregate operates result contains data
+//        rst.subscribe(rstObserver)
+
     }
   }
 }
