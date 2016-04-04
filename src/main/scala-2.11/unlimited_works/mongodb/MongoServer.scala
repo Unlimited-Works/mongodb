@@ -5,6 +5,7 @@ import java.util.concurrent.Executors
 import lorance.rxscoket.session._
 import lorance.rxscoket.log
 import rx.lang.scala.schedulers.ComputationScheduler
+import unlimited_works.mongodb.blog.{Overview, PenName}
 
 /**
   * which represent a connect's message queue
@@ -33,5 +34,8 @@ object MongoServer extends App {
       }
     }
   }
+
+  val p = PenName.ready
+  val p2 = Overview.ready
   Thread.currentThread().join()
 }
