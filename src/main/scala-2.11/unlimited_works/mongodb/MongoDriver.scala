@@ -11,7 +11,7 @@ object MongoDriver {
 
   val defaultClientAddress = "mongodb://localhost:27017"
   clients += (defaultClientAddress -> mongoClient(defaultClientAddress))
-  log("clients - " + clients)
+  log(s"${getClass} - " + clients)
 
   def mongoClient(address: String): MongoClient = {
     log("mongo client link at " + address)

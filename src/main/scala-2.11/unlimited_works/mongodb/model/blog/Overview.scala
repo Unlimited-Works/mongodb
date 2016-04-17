@@ -1,15 +1,17 @@
-package unlimited_works.mongodb.blog
+package unlimited_works.mongodb.model.blog
 
 import java.nio.ByteBuffer
 
 import lorance.rxscoket._
-import org.mongodb.scala.bson.{BsonObjectId, BsonDocument}
+import org.mongodb.scala.Document
+import org.mongodb.scala.bson.BsonDocument
 import org.mongodb.scala.model.Projections._
 import rx.lang.scala.Observable
-import unlimited_works.mongodb.{MongoServer, MongoDriver}
+import unlimited_works.mongodb.MongoDriver
 import lorance.rxscoket.session.implicitpkg._
-import net.liftweb.json.JsonDSL._
 import net.liftweb.json._
+import unlimited_works.mongodb.start.ServerMongoWithModel
+
 /**
   * todo add index for blogs pen_name collection
   * {
@@ -35,7 +37,7 @@ object Overview {
     * stream of the taskId
     */
   def ready = {
-    val o = MongoServer.reader.flatMap { s =>
+    val o = ServerMongoWithModel.reader.flatMap { s =>
       val jsonProto = s._1.filter(_.uuid == 1.toByte)
       val taskAndData = jsonProto.map { x =>
         try {
@@ -58,11 +60,16 @@ object Overview {
     //make is error able, it will be broken if some error occurred
     o.subscribe { sub =>
       val findRst = collection.find(BsonDocument("pen_name" -> sub._2)).limit(sub._4).skip(sub._3)//modify
-      val json = findRst.projection(fields(include("title", "issue_time", "introduction"), excludeId())).map(_.toJson)//modify
+      val json = findRst.projection(fields(include("title", "issue_time", "introduction")))//modify
 
       json.subscribe(
-        (s: String) => {
-          val p: JObject = parse(s).asInstanceOf[JObject]
+        (s: Document) => {
+          val id = s.get("_id").map(_.asObjectId().getValue.toString).get
+          val excludeId = s - "_id"
+          val withIdStr = excludeId + ("id" -> id)
+
+          val p: JObject = parse(withIdStr.toJson).asInstanceOf[JObject]
+
           log(s"blog overview mongo docuemnt - ${prettyRender(p)}", 4)
           val resultJ = JObject(JField("result", p))
 

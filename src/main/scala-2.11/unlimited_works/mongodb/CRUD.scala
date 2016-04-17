@@ -14,7 +14,7 @@ import org.mongodb.scala.bson.collection.immutable.Document
 class CRUD(mongoAddress: String) {
   //mongo
   private val mongoClient = MongoDriver.clients(MongoDriver.defaultClientAddress)
-  def execute(load: String, socket: ConnectedSocket) = {
+  def execute(load: String, socket: ConnectedSocket): Unit = {
     try {
       val json = parse(load)
 

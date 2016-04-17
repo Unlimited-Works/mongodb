@@ -40,8 +40,7 @@ Besides, all data represent as string - NEEDN'T, use Bson type flag can create b
 结构是HashMap(taskId -> (proto => T)),每个taskId对应一个函数,表示响应的事件.
 
 #### 计划
-1. 对于每一个请求,返回一个值给对方,双方通过taskId来标示.接收方的自行处理(将以Future/Observable的形式返回,相比两者,Observable更加通用).(已完成)
-将taskId设定为可选项,即Option[JField],当其为None时不返回结果.  
+1. 对于每一个请求,返回一个值给对方,双方通过taskId来标示.接收方的自行处理
 2. log system (kafka)  
 3. rework after msg parse failed at CURD execute method  
 
@@ -50,3 +49,14 @@ Besides, all data represent as string - NEEDN'T, use Bson type flag can create b
 匹配了taskId,但内容并没有对上而出现的异常)
 
 custom protocol should be GC.
+
+####TODO
+现在创建了多个Observable同时处理taskId,造成响应的数据并不是合适的地方.应该在一个入口将taskId解析出来,并通过Dispatch方法调度出真正处理的方法.
+
+####为什么写这个程序?
+为了细分整个博客项目,更灵活的读取数据而将"数据的获取"分离出来,该项目和Play项目共同组成一个项目.
+1. 为什么用socket作为通信协议,而不是jar包?
+socket作为进程间的通信方式,更加灵活和自由.
+1.1 为什么不用thrift或者protobuf?
+1) 现在不能预期需要的数据通信方式是什么样的,自己编写通信方式更加自由
+2) thrift和protobuf基于跨语言的数据模板和RPC方法,需要经过编译,在一个人的开发中显得笨重.

@@ -1,16 +1,19 @@
-package unlimited_works.mongodb
+package unlimited_works.mongodb.start
 
 import java.util.concurrent.Executors
 
-import lorance.rxscoket.session._
 import lorance.rxscoket.log
+import lorance.rxscoket.session._
 import rx.lang.scala.schedulers.ComputationScheduler
-import unlimited_works.mongodb.blog.{Overview, PenName}
+import unlimited_works.mongodb.CRUD
 
 /**
   * which represent a connect's message queue
   */
-object MongoServer extends App {
+object MongoServerBareCRUD extends App {
+
+  lorance.rxscoket.logLevel =10
+
   val crud = new CRUD("mongodb://localhost:27017")
   //open socket
   val entrance = {
@@ -25,17 +28,20 @@ object MongoServer extends App {
 //    subscribeOn(ComputationScheduler()).//needn't use ThreaPool for subscribe event beacuse of data cimputation works on `stratReading` loop which is scala Future affect.
     observeOn(ComputationScheduler())
 
+  //handle common method
   val mongoOperationSub = reader.subscribe { _ match {
     case (protos, socket) =>
-      protos.foreach { proto =>
-        log(s"protocol - $proto")
-        val jsonCmd = new String(proto.loaded.array())
-        crud.execute(jsonCmd, socket)
+      try {
+        protos.foreach { proto =>
+          log(s"protocol - $proto")
+          val jsonCmd = new String(proto.loaded.array())
+          crud.execute(jsonCmd, socket)
+        }
+      } catch {
+        case e: Throwable => log(s"execute CRUD - $e")
       }
     }
   }
 
-  val p = PenName.ready
-  val p2 = Overview.ready
   Thread.currentThread().join()
 }

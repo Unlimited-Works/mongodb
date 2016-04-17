@@ -1,15 +1,16 @@
-package unlimited_works.mongodb.blog
+package unlimited_works.mongodb.model.blog
 
 import java.nio.ByteBuffer
 
 import org.mongodb.scala.bson.{BsonDocument, BsonObjectId}
 import rx.lang.scala.Observable
-import unlimited_works.mongodb.{MongoDriver, MongoServer}
+import unlimited_works.mongodb.MongoDriver
 import lorance.rxscoket.session.implicitpkg._
 import net.liftweb.json._
 import org.mongodb.scala.model.Projections._
 import lorance.rxscoket.log
 import lorance.rxscoket.session
+import unlimited_works.mongodb.start.ServerMongoWithModel
 
 /**
   * get
@@ -33,7 +34,7 @@ object PenName {
     * stream of the taskId
     */
   def ready = {
-    val o = MongoServer.reader.flatMap{s =>
+    val o = ServerMongoWithModel.reader.flatMap{ s =>
       val jsonProto = s._1.filter(_.uuid == 1.toByte)
       val taskAndData = jsonProto.map{x =>
         try {
@@ -68,5 +69,4 @@ object PenName {
       )
     }
   }
-
 }
