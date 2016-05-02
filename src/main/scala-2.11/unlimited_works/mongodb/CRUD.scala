@@ -172,11 +172,14 @@ class CRUD(mongoAddress: String) {
               val resultJ = JObject(JField("result", json))
               val merged = resultJ.merge(JObject(taskId))
               val mergedStr = compactRender(merged)
+              Thread.sleep(2000)
               log(s"aggregate onNext - $mergedStr")
               socket.send(ByteBuffer.wrap(JsonParse.enCode(mergedStr)))
             },
             (error: Throwable) => log(s"aggregate onError - $error", -1),
             () => taskIdOpt.map { t =>
+              Thread.sleep(4000)
+
               val jsonStr = compactRender(JObject(t))
               log(s"aggregate completed - $jsonStr")
               socket.send(ByteBuffer.wrap(JsonParse.enCode(jsonStr)))

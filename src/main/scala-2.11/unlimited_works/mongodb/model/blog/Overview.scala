@@ -43,7 +43,8 @@ object Overview {
         try {
           val parsed = parse(x.loaded.array.string)
           val tid = parsed.findField(_.name == "taskId").get
-          if (tid.value.values.asInstanceOf[String] == "blog/index/overview") {//modify
+          val model = parsed.findField(_.name == "model").get
+          if (model.value.values.asInstanceOf[String] == "blog/index/overview") {//modify
             val penName = (parsed \ "penName" values).asInstanceOf[String]//modify
             val skip = (parsed \ "skip" values).asInstanceOf[BigInt].toInt//modify
             val limit = (parsed \ "limit" values).asInstanceOf[BigInt].toInt//modify

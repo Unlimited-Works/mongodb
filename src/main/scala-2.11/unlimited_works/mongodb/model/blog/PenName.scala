@@ -40,7 +40,8 @@ object PenName {
         try {
           val parsed = parse(x.loaded.array.string)
           val tid = parsed.findField(_.name == "taskId").get
-          if (tid.value.values.asInstanceOf[String] == "pen_name") {
+          val model = parsed.findField(_.name == "model").get
+          if (model.value.values.asInstanceOf[String] == "pen_name") {
             val accountId = (parsed \ "accountId" values).asInstanceOf[String]
             Some((tid, accountId, s._2))
           } else None

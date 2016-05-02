@@ -12,7 +12,7 @@ import unlimited_works.mongodb.CRUD
   */
 object MongoServerBareCRUD extends App {
 
-  lorance.rxscoket.logLevel =10
+//  lorance.rxscoket.logLevel = 10000
 
   val crud = new CRUD("mongodb://localhost:27017")
   //open socket

@@ -3,7 +3,7 @@ package unlimited_works.mongodb.start
 import lorance.rxscoket.presentation.json.JProtocol
 import lorance.rxscoket.session.ServerEntrance
 import rx.lang.scala.Observable
-import unlimited_works.mongodb.model.ModelFramwork
+import unlimited_works.mongodb.model.{SigninModels, BlogModels}
 import unlimited_works.mongodb.model.blog.{Overview, PenName}
 
 /**
@@ -22,6 +22,7 @@ object ServerMongoWithModel extends App {
   Overview.ready
   PenName.ready
 
-  val x = ModelFramwork.o
+  val x = BlogModels.o
+  val y = SigninModels.o
   Thread.currentThread().join()
 }
