@@ -28,3 +28,9 @@ libraryDependencies ++= Seq(
 //手动管理依赖
 //val baseDir: File = baseDirectory.value
 unmanagedBase :=  baseDirectory.value / "mylib"
+
+assemblyJarName in assembly := "ServerMongoWithModel.jar"
+mainClass in assembly := Some(" unlimited_works.mongodb.start.ServerMongoWithModel")
+
+//assemblyJarName in assembly := "MongoServerBareCRUD.jar"
+//mainClass in assembly := Some(" unlimited_works.mongodb.start.MongoServerBareCRUD")
