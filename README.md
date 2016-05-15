@@ -51,7 +51,9 @@ Besides, all data represent as string - NEEDN'T, use Bson type flag can create b
 custom protocol should be GC.
 
 ####TODO
-现在创建了多个Observable同时处理taskId,造成响应的数据并不是合适的地方.应该在一个入口将taskId解析出来,并通过Dispatch方法调度出真正处理的方法.
+* 现在创建了多个Observable同时处理taskId,造成响应的数据并不是合适的地方.应该在一个入口将taskId解析出来,并通过Dispatch方法调度出真正处理的方法.
+* 健全的异常处理机制 - 现在会因为发错消息而整个服务不可用.
+* 模块不再使用flatmap产生新数据流,而是从Model中dispatch各种子model,子模块通过继承/注册进行横向的业务功能扩展
 
 ####为什么写这个程序?
 为了细分整个博客项目,更灵活的读取数据而将"数据的获取"分离出来,该项目和Play项目共同组成一个项目.

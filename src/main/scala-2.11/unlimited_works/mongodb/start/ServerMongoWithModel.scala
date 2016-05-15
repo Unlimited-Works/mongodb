@@ -10,7 +10,9 @@ import unlimited_works.mongodb.model.blog.{Overview, PenName}
   *
   */
 object ServerMongoWithModel extends App {
-  lorance.rxscoket.logLevel =100
+  lorance.rxscoket.logLevel = 100
+  lorance.rxscoket.logAim += "ready_pen_name"
+
   val conntected = new ServerEntrance("127.0.0.1", 10010).listen
   val readX = conntected.map(c => (c, c.startReading))
 

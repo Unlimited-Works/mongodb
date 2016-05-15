@@ -80,7 +80,6 @@ object Overview {
         },
         (e: Throwable) => {
           log(s"blog/index/overview broken - $e")
-          e
         },
         () => {
           val r = compactRender(JObject(sub._1))

@@ -53,7 +53,7 @@ object SigninModels {
                 JField("penName", JString(s.get("pen_name").get.asString().getValue)))),
                 taskFieldOpt.get))
             },
-            (e: Throwable) => e,
+            (e: Throwable) => e.printStackTrace(),
             () => jProtocol.send(JObject(JField("isCompleted", JBool(true)), taskFieldOpt.get))
           )
         }
@@ -67,7 +67,7 @@ object SigninModels {
               (s: Document) => {
                 jProtocol.send(JObject(JField("canUse", JBool(true)), taskFieldOpt.get))
               },
-              (e: Throwable) => e,
+              (e: Throwable) => e.printStackTrace(),
               () => // 如果只收到完成消息,表示失败
                 jProtocol.send(JObject(JField("canUse", JBool(false)), taskFieldOpt.get))
             )
@@ -126,7 +126,7 @@ object SigninModels {
             )
             acctObv.subscribe(
               (s:Completed) => jProtocol.send(taskFieldOpt.get),
-              (e: Throwable) => e
+              (e: Throwable) => e.printStackTrace()
             )
           case None => Unit
         }

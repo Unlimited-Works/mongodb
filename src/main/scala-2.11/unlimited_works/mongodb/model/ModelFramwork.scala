@@ -50,7 +50,7 @@ object BlogModels {
               jProtocol.send(rst)
             },
             (e: Throwable) => {
-              e
+              e.printStackTrace()
             },
             () => {
               log(s"blog post completed", 30)
@@ -75,7 +75,7 @@ object BlogModels {
               jProtocol.send(rst)
             },
             (e: Throwable) => {
-              e
+              e.printStackTrace()
             },
             () => {
               log(s"blog post completed", 30)
@@ -101,7 +101,7 @@ object BlogModels {
               jProtocol.send(rst)
             },
             (e: Throwable) => {
-              e
+              e.printStackTrace()
             },
             () => {
               log(s"blog post completed", 30)
@@ -129,7 +129,7 @@ object BlogModels {
               }
             },
             (e: Throwable) => {
-              e
+              e.printStackTrace()
             },
             () => {
               log(s"blog delete completed", 30)
@@ -156,7 +156,7 @@ object BlogModels {
                   jProtocol.send(rst)
                 },
               (e: Throwable) => {
-                e
+                e.printStackTrace()
               },
               () => {
                 log(s"blog delete completed", 30)
@@ -175,7 +175,7 @@ object BlogModels {
                   jProtocol.send(rst)
                 },
               (e: Throwable) => {
-                e
+                e.printStackTrace()
               },
               () => {
                 log(s"blog delete completed", 30)
@@ -186,7 +186,8 @@ object BlogModels {
         }
       case _ =>
         //todo handle the exception
-        throw new Throwable("Not handle the model - " + modelStr)
+//        throw new Throwable("Not handle the model - " + modelStr)
+        log("Not handle the model - " + modelStr)
     }
   }
 

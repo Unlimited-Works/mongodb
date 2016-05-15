@@ -29,8 +29,15 @@ libraryDependencies ++= Seq(
 //val baseDir: File = baseDirectory.value
 unmanagedBase :=  baseDirectory.value / "mylib"
 
-assemblyJarName in assembly := "ServerMongoWithModel.jar"
-mainClass in assembly := Some(" unlimited_works.mongodb.start.ServerMongoWithModel")
+//assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
+
+//assemblyJarName in assembly := "ServerMongoWithModel.jar"
+//mainClass in assembly := Some(" unlimited_works.mongodb.start.ServerMongoWithModel")
 
 //assemblyJarName in assembly := "MongoServerBareCRUD.jar"
-//mainClass in assembly := Some(" unlimited_works.mongodb.start.MongoServerBareCRUD")
+
+//assemblyJarName in assembly := "MongoDAO.jar"
+//mainClass in assembly :=  Some("unlimited_works.mongodb.start.MongoServerBareCRUD")
+
+
+mainClass in Compile := Some("unlimited_works.mongodb.start.MongoServerBareCRUD")
