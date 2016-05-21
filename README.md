@@ -19,7 +19,7 @@ Cake Pattern, Guice(by java 5 annotation)
 ```
 {
   taskId: "...",//client-server response connection
-  db: "helloworld",
+  db: "blog",
   collection: "test",
   method: "find/insert/update/remove/aggregate/count",//besides, count could be replaced by aggregate
   params:{...}

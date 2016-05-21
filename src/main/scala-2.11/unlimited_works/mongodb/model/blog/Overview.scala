@@ -30,7 +30,7 @@ import unlimited_works.mongodb.start.ServerMongoWithModel
   */
 object Overview {
   val mongoClient = MongoDriver.clients(MongoDriver.defaultClientAddress)
-  val collection = mongoClient.getDatabase("helloworld").getCollection("blogs")
+  val collection = mongoClient.getDatabase("blog").getCollection("blogs")
   implicit val formats = DefaultFormats
 
   /**

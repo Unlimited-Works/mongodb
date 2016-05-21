@@ -19,7 +19,7 @@ import java.util.UUID
   */
 object BlogModels {
   val mongoClient = MongoDriver.clients(MongoDriver.defaultClientAddress)
-  val hellowroldDb = mongoClient.getDatabase("helloworld")
+  val hellowroldDb = mongoClient.getDatabase("blog")
   val blogCollection = hellowroldDb.getCollection("blogs")
   implicit val formats = DefaultFormats
 

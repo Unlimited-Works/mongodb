@@ -29,7 +29,7 @@ import scala.util.{Success, Failure, Try}
   */
 object PenName {
   val mongoClient = MongoDriver.clients(MongoDriver.defaultClientAddress)
-  val collection = mongoClient.getDatabase("helloworld").getCollection("account")
+  val collection = mongoClient.getDatabase("blog").getCollection("account")
   implicit val formats = DefaultFormats
 
   /**

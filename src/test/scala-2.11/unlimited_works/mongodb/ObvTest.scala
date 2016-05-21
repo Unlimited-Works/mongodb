@@ -7,7 +7,7 @@ import org.mongodb.scala.bson.collection.immutable.Document
   */
 object ObvTest extends App {
   val mongoClient = MongoDriver.clients(MongoDriver.defaultClientAddress)
-  val hellowroldDb = mongoClient.getDatabase("helloworld")
+  val hellowroldDb = mongoClient.getDatabase("blog")
   val registerInvitationColl = hellowroldDb.getCollection("register_invitation")
   val accountColl = hellowroldDb.getCollection("account")
 

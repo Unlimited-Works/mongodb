@@ -5,7 +5,7 @@ import org.mongodb.scala.{Completed, MongoClient}
 
 object TestJStr extends App {
   val mongoClient: MongoClient = MongoClient()
-  val mongoDB = mongoClient.getDatabase("helloworld")
+  val mongoDB = mongoClient.getDatabase("blog")
   val mongoCollection = mongoDB.getCollection("test")
   //  val jStr = """{"result":[{"age": 0, "name": "name01"}, {"age":1, "name": "name02"}]}"""
   val jStr = """{"name":"ugl"}"""
