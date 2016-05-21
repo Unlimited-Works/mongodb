@@ -34,10 +34,9 @@ unmanagedBase :=  baseDirectory.value / "mylib"
 //assemblyJarName in assembly := "ServerMongoWithModel.jar"
 //mainClass in assembly := Some(" unlimited_works.mongodb.start.ServerMongoWithModel")
 
-//assemblyJarName in assembly := "MongoServerBareCRUD.jar"
+assemblyJarName in assembly := "MongoServerBareCRUD.jar"
 
-//assemblyJarName in assembly := "MongoDAO.jar"
-//mainClass in assembly :=  Some("unlimited_works.mongodb.start.MongoServerBareCRUD")
+mainClass in assembly :=  Some("unlimited_works.mongodb.start.MongoServerBareCRUD")
 
 
-mainClass in Compile := Some("unlimited_works.mongodb.start.MongoServerBareCRUD")
+//mainClass in Compile := Some("unlimited_works.mongodb.start.MongoServerBareCRUD")

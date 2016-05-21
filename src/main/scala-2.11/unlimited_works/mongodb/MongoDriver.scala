@@ -9,7 +9,7 @@ import scala.collection.mutable
 object MongoDriver {
   val clients = mutable.Map[String, MongoClient]()
 
-  val defaultClientAddress = "mongodb://localhost:27017"
+  val defaultClientAddress = s"mongodb://${Config.appConfig.mongo.username}:${Config.appConfig.mongo.password}@${Config.appConfig.mongo.address}:${Config.appConfig.mongo.port}/${Config.appConfig.mongo.database}"
   clients += (defaultClientAddress -> mongoClient(defaultClientAddress))
   log(s"${getClass} - " + clients)
 

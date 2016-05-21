@@ -8,3 +8,6 @@ target/
 
 #TEMP FILE
 *.log
+
+#congif
+*/config/deploy
