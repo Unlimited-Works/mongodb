@@ -2,16 +2,16 @@ package unlimited_works.mongodb.start
 
 import lorance.rxscoket.presentation.json.JProtocol
 import lorance.rxscoket.session.ServerEntrance
-import rx.lang.scala.Observable
 import unlimited_works.mongodb.model.{SigninModels, BlogModels}
 import unlimited_works.mongodb.model.blog.{Overview, PenName}
+import unlimited_works.mongodb.mongodbLogger
 
 /**
   *
   */
 object ServerMongoWithModel extends App {
-  lorance.rxscoket.logLevel = 100
-  lorance.rxscoket.logAim += "ready_pen_name"
+  mongodbLogger.logLevel = 100
+  mongodbLogger.logAim += "ready_pen_name"
 
   val conntected = new ServerEntrance("127.0.0.1", 10010).listen
   val readX = conntected.map(c => (c, c.startReading))

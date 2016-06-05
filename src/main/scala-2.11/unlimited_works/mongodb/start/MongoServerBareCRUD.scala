@@ -2,7 +2,7 @@ package unlimited_works.mongodb.start
 
 import java.util.concurrent.Executors
 
-import lorance.rxscoket.log
+import unlimited_works.mongodb.mongodbLogger
 import lorance.rxscoket.session._
 import rx.lang.scala.schedulers.ComputationScheduler
 import unlimited_works.mongodb.CRUD
@@ -17,7 +17,7 @@ object MongoServerBareCRUD extends App {
   val crud = new CRUD("mongodb://localhost:27017")
   //open socket
   val entrance = {
-    log("socket start listen")
+    mongodbLogger.log("socket start listen")
     new ServerEntrance("127.0.0.1", 10001)
   }
   val listen = entrance.listen
@@ -30,15 +30,13 @@ object MongoServerBareCRUD extends App {
 
   //handle common method
   val mongoOperationSub = reader.subscribe { _ match {
-    case (protos, socket) =>
+    case (proto, socket) =>
       try {
-        protos.foreach { proto =>
-          log(s"protocol - $proto")
-          val jsonCmd = new String(proto.loaded.array())
-          crud.execute(jsonCmd, socket)
-        }
+        mongodbLogger.log(s"protocol - $proto")
+        val jsonCmd = new String(proto.loaded.array())
+        crud.execute(jsonCmd, socket)
       } catch {
-        case e: Throwable => log(s"execute CRUD - $e")
+        case e: Throwable => mongodbLogger.log(s"execute CRUD - $e")
       }
     }
   }

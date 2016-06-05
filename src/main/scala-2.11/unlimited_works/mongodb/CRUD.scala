@@ -8,7 +8,7 @@ import lorance.rxscoket.session.ConnectedSocket
 import lorance.rxscoket.presentation.json.JsonParse
 
 import net.liftweb.json._
-import org.mongodb.scala.{MongoClient, Completed}
+import org.mongodb.scala.Completed
 import org.mongodb.scala.bson.collection.immutable.Document
 
 class CRUD(mongoAddress: String) {
@@ -51,7 +51,7 @@ class CRUD(mongoAddress: String) {
             val resultJ = JObject(JField("result", json))
             val merged = resultJ.merge(JObject(taskIdOpt.get)) //todo try-catch `NoSuchElementException` from None.get
           val mergedStr = compactRender(merged)
-            log(s"find merged result - $mergedStr")
+            mongodbLogger.log(s"find merged result - $mergedStr")
             socket.send(ByteBuffer.wrap(session.enCode(1.toByte, mergedStr)))
           }
 
@@ -87,16 +87,16 @@ class CRUD(mongoAddress: String) {
           val onNext = (s: Completed) => {
             val json = JObject(JField("result", JString(s.toString)))
             val merged = compactRender(json.merge(JObject(taskIdOpt.get))) //todo try-catch `NoSuchElementException` from None.get
-            log("insert completed - " + merged)
+            mongodbLogger.log("insert completed - " + merged)
 
             socket.send(ByteBuffer.wrap(JsonParse.enCode(merged)))
           }
 
-          val onError = (e: Throwable) => log(s"insert error - $e")
+          val onError = (e: Throwable) => mongodbLogger.log(s"insert error - $e")
           val onCompleted = () => {
             val rst = compactRender(JObject(taskIdOpt.get)) //todo try-catch `NoSuchElementException` from None.get
 
-            log(s"insert completed - $rst")
+            mongodbLogger.log(s"insert completed - $rst")
             socket.send(ByteBuffer.wrap(JsonParse.enCode(rst)))
           }
           rst.subscribe(onNext,
@@ -121,7 +121,7 @@ class CRUD(mongoAddress: String) {
           val modifyDoc = Document(modify)
 
           val rst = theColl.updateMany(matchDoc, modifyDoc)
-          rst.subscribe { s: UpdateResult => log(s.toString) }
+          rst.subscribe { s: UpdateResult => mongodbLogger.log(s.toString) }
 
         /**
           * method: delete
@@ -133,7 +133,7 @@ class CRUD(mongoAddress: String) {
           val matcher = compactRender(params \ "match")
           val matchDoc = Document(matcher)
           val rst = theColl.deleteMany(matchDoc)
-          rst.subscribe { s: DeleteResult => log(s.toString) }
+          rst.subscribe { s: DeleteResult => mongodbLogger.log(s.toString) }
 
         /**
           * method: count
@@ -149,7 +149,7 @@ class CRUD(mongoAddress: String) {
             rst.subscribe { s: Long =>
               //todo try-catch `taskIdOpt.get`
               val jString = compactRender(JObject(taskIdOpt.get).merge(JObject(JField("count", JInt(s)))))
-              log(s"count result - $jString")
+              mongodbLogger.log(s"count result - $jString")
               socket.send(ByteBuffer.wrap(JsonParse.enCode(jString)))
             }
 
@@ -173,15 +173,15 @@ class CRUD(mongoAddress: String) {
               val merged = resultJ.merge(JObject(taskId))
               val mergedStr = compactRender(merged)
               Thread.sleep(2000)
-              log(s"aggregate onNext - $mergedStr")
+              mongodbLogger.log(s"aggregate onNext - $mergedStr")
               socket.send(ByteBuffer.wrap(JsonParse.enCode(mergedStr)))
             },
-            (error: Throwable) => log(s"aggregate onError - $error", -1),
+            (error: Throwable) => mongodbLogger.log(s"aggregate onError - $error", -1),
             () => taskIdOpt.map { t =>
               Thread.sleep(4000)
 
               val jsonStr = compactRender(JObject(t))
-              log(s"aggregate completed - $jsonStr")
+              mongodbLogger.log(s"aggregate completed - $jsonStr")
               socket.send(ByteBuffer.wrap(JsonParse.enCode(jsonStr)))
             }
           )
@@ -216,7 +216,7 @@ class CRUD(mongoAddress: String) {
 
       }
     } catch{
-      case e: Throwable => log(s"execute exception - $e")
+      case e: Throwable => mongodbLogger.log(s"execute exception - $e")
     }
   }
 }

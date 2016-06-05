@@ -13,6 +13,7 @@ import unlimited_works.mongodb.MongoDriver
 import unlimited_works.mongodb.start.ServerMongoWithModel
 import net.liftweb.json._
 import java.util.UUID
+import unlimited_works.mongodb.mongodbLogger
 
 /**
   *
@@ -46,14 +47,14 @@ object BlogModels {
           json.subscribe (
             (s: String) => {
               val rst = JObject(taskField, JField("result", parse(s)))
-              log(s"blog post merge taskId - ${compactRender(rst)}", 30)
+              mongodbLogger.log(s"blog post merge taskId - ${compactRender(rst)}", 30)
               jProtocol.send(rst)
             },
             (e: Throwable) => {
               e.printStackTrace()
             },
             () => {
-              log(s"blog post completed", 30)
+              mongodbLogger.log(s"blog post completed", 30)
               jProtocol.send(JObject(taskField))
             }
           )
@@ -71,14 +72,14 @@ object BlogModels {
           postObv.subscribe (
             (s: UpdateResult) => {
               val rst = JObject(taskField)
-              log(s"blog post merge taskId - ${compactRender(rst)}", 30)
+              mongodbLogger.log(s"blog post merge taskId - ${compactRender(rst)}", 30)
               jProtocol.send(rst)
             },
             (e: Throwable) => {
               e.printStackTrace()
             },
             () => {
-              log(s"blog post completed", 30)
+              mongodbLogger.log(s"blog post completed", 30)
               jProtocol.send(JObject(taskField))
             }
           )
@@ -93,18 +94,20 @@ object BlogModels {
           val title = (load \ "title").values.asInstanceOf[String]
           val body = (load \ "body").values.asInstanceOf[String]
           val time = (load \ "time").values.asInstanceOf[String]
-          val postObv = blogCollection.insertOne(Document("introduction" -> introduce,  "title" -> title, "body" -> body, "pen_name" -> penName, "issue_time" -> time))
+          val newObjId = BsonObjectId()
+          val postObv = blogCollection.insertOne(Document("introduction" -> introduce,  "title" -> title, "body" -> body, "pen_name" -> penName, "issue_time" -> time, "_id" -> newObjId))
           postObv.subscribe (
             (s: Completed) => {
-              val rst = JObject(taskField)
-              log(s"blog post merge taskId - ${compactRender(rst)}", 30)
+              val rst = JObject(taskField, JField("postId", JString(newObjId.getValue.toString)))
+
+              mongodbLogger.log(s"blog post merge taskId - ${compactRender(rst)}", 30)
               jProtocol.send(rst)
             },
             (e: Throwable) => {
               e.printStackTrace()
             },
             () => {
-              log(s"blog post completed", 30)
+              mongodbLogger.log(s"blog post completed", 30)
               jProtocol.send(JObject(taskField))
             }
           )
@@ -120,11 +123,11 @@ object BlogModels {
             (s: DeleteResult) => {
               if (s.wasAcknowledged && s.getDeletedCount == 1){
                 val rst = JObject(taskField)
-                log(s"blog delete post merge taskId - ${compactRender(rst)}", 30)
+                mongodbLogger.log(s"blog delete post merge taskId - ${compactRender(rst)}", 30)
                 jProtocol.send(rst)
               } else {
                 val rst = JObject(taskField, JField("result", JString("delete failed")))
-                log(s"blog delete post merge taskId failed - ${compactRender(rst)}", 30)
+                mongodbLogger.log(s"blog delete post merge taskId failed - ${compactRender(rst)}", 30)
                 jProtocol.send(rst)
               }
             },
@@ -132,7 +135,7 @@ object BlogModels {
               e.printStackTrace()
             },
             () => {
-              log(s"blog delete completed", 30)
+              mongodbLogger.log(s"blog delete completed", 30)
               jProtocol.send(JObject(taskField, JField("result", JString("completed"))))
             }
           )
@@ -159,7 +162,7 @@ object BlogModels {
                 e.printStackTrace()
               },
               () => {
-                log(s"blog delete completed", 30)
+                mongodbLogger.log(s"blog delete completed", 30)
                 jProtocol.send(JObject(taskField, JField("error", JString("这只是一个结束信号"))))
               }
             )
@@ -178,7 +181,7 @@ object BlogModels {
                 e.printStackTrace()
               },
               () => {
-                log(s"blog delete completed", 30)
+                mongodbLogger.log(s"blog delete completed", 30)
                 jProtocol.send(JObject(taskField, JField("error", JString("这只是一个结束信号"))))
               }
             )
@@ -187,7 +190,7 @@ object BlogModels {
       case _ =>
         //todo handle the exception
 //        throw new Throwable("Not handle the model - " + modelStr)
-        log("Not handle the model - " + modelStr)
+        mongodbLogger.log("Not handle the model - " + modelStr)
     }
   }
 
