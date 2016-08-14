@@ -1,6 +1,6 @@
 name := "mongodb"
 
-version := "1.0"
+version := "1.0.1"
 
 scalaVersion := "2.11.7"
 
@@ -18,10 +18,13 @@ libraryDependencies ++= Seq(
 //  "org.mongodb" % "mongodb-driver-async" % versions.mongoJavaDriverAsync,
 
   //  "com.typesafe.akka" %% "akka-actor" % versions.akkaActor,
-  "io.reactivex" %% "rxscala" % "0.26.0",
+  "io.reactivex" %% "rxscala" % "0.26.2",
 
   //json
-  "net.liftweb" %% "lift-json" % versions.liftMongoRecorder
+  "net.liftweb" %% "lift-json" % versions.liftMongoRecorder,
+
+  "com.scalachan" %% "rxsocket" % "0.9.7"
+
 )
 
 
@@ -31,8 +34,8 @@ unmanagedBase :=  baseDirectory.value / "mylib"
 
 //assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
 
-//assemblyJarName in assembly := "ServerMongoWithModel.jar"
-//mainClass in assembly := Some(" unlimited_works.mongodb.start.ServerMongoWithModel")
+assemblyJarName in assembly := "ServerMongoWithModel.jar"
+mainClass in assembly := Some(" unlimited_works.mongodb.start.ServerMongoWithModel")
 
-assemblyJarName in assembly := "MongoServerBareCRUD.jar"
-mainClass in assembly :=  Some("unlimited_works.mongodb.start.MongoServerBareCRUD")
+//assemblyJarName in assembly := "MongoServerBareCRUD.jar"
+//mainClass in assembly :=  Some("unlimited_works.mongodb.start.MongoServerBareCRUD")

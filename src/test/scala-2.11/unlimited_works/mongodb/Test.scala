@@ -13,6 +13,10 @@ object TestJStr extends App {
   val documentStr: Document = Document(jStr)
   val result = mongoCollection.insertOne(documentStr)
   result.subscribe((observer: Completed) => println(observer))
+
+//  val docorg.mongodb.scala.bson.collection.mutable.Document = Document("name" -> "MongoDB", "type" -> "database",
+//    "count" -> 1, "info" -> Document("x" -> 203, "y" -> 102))
+
   Thread.currentThread().join()
 }
 
